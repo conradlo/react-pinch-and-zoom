@@ -1,7 +1,7 @@
 {
   "name": "react-pinch-and-zoom",
   "version": "0.0.1",
-  "description": "A react container component with iOS UIScrollView's alike pinch-to-zoom gesture interaction",
+  "description": "A react container component with iOS UIScrollView's alike pinch-to-zoom gesture interaction.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,5 +14,11 @@
     "pan"
   ],
   "author": "Conrad Lo",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/conradlo/react-pinch-and-zoom"
+  },
+  "homepage": "https://github.com/conradlo/react-pinch-and-zoom#readme",
+  "bugs": "https://github.com/conradlo/react-pinch-and-zoom/issues",
   "license": "MIT"
 }
