@@ -1,6 +1,6 @@
 {
   "name": "react-pinch-and-zoom",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A react container component with iOS UIScrollView's alike pinch-to-zoom gesture interaction.",
   "main": "lib/index.js",
   "scripts": {
