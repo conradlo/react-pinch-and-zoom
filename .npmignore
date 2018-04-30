@@ -1,0 +1,4 @@
+# npm only need the transpiled js file located under ./lib
+docs
+src
+.babelrc

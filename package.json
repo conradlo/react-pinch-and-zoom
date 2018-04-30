@@ -2,9 +2,11 @@
   "name": "react-pinch-and-zoom",
   "version": "0.0.2",
   "description": "A react container component with iOS UIScrollView's alike pinch-to-zoom gesture interaction.",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lib": "babel src/lib -d lib --copy-files",
+    "lib:watch": "babel src/lib -w -d lib --copy-files"
   },
   "keywords": [
     "react",
@@ -20,5 +22,10 @@
   },
   "homepage": "https://github.com/conradlo/react-pinch-and-zoom#readme",
   "bugs": "https://github.com/conradlo/react-pinch-and-zoom/issues",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1"
+  }
 }
