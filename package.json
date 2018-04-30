@@ -1,0 +1,19 @@
+{
+  "name": "react-pinch-and-zoom",
+  "version": "0.0.1",
+  "description": "An iOS UIScrollView alike pinch to zoom container react component",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react",
+    "reactjs",
+    "pinch",
+    "zoom",
+    "pan",
+    "UIScrollView"
+  ],
+  "author": "Conrad Lo <email@conradlo.com> (https://conradlo.com)",
+  "license": "ISC"
+}
