@@ -2,8 +2,9 @@
  * PinchToZoom react componenets
  */
 
-import React, { Component, PropTypes } from 'react';
-import './PinchToZoom.scss';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+// import './PinchToZoom.scss';
 
 class PinchToZoom extends Component {
 
