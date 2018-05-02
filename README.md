@@ -3,7 +3,7 @@
 
 # React Pinch and Zoom
 
-A react container component with iOS UIScrollView's alike pinch-to-zoom gesture interaction.
+A react container component with pinch-to-zoom gesture interaction.
 
 ## Getting Started
 
@@ -13,9 +13,9 @@ A react container component with iOS UIScrollView's alike pinch-to-zoom gesture 
 
 ### Installing
 
-1. Install this package as dependency (e.g. via npm)
+1. Install this package as dependency
 
-    ```sh
+    ```console
     [~/project/dir] $ npm install react-pinch-and-zoom
     ```
 
@@ -29,38 +29,60 @@ A react container component with iOS UIScrollView's alike pinch-to-zoom gesture 
     ```jsx
     render() {
       return (
-        <div className="outer-container">
-          <PinchToZoom
-            boundSize={{ width: baseScreenWidth, height: baseHeight }}
-            contentSize={{ width: contentSize.w, height: contentSize.h }}
-          > 
-            { this.props.children } 
+        <div className="container">
+          <PinchToZoom>
+            <img src={...}/>
           </PinchToZoom>
         </div>
       );
     }
     ```
 
-## Running the tests
-
-```sh
-[~/project/dir] $ npm test
-```
-
 ## Project structure
 
-```
-.
+```console
+./react-pinch-and-zoom (master)
 ├── CONTRIBUTING.md
 ├── LICENSE
 ├── README.md
-├── lib                // git ignored
+├── docs               // compiled github demo page
+├── lib                // compiled react-pinch-and-zoom (git ignored)
 ├── node_modules       // git ignored
 ├── package-lock.json
 ├── package.json
-└── src                // source code
-    ├── demo
-    └── lib
+├── server.js          // config local development server
+├── src
+│   ├── PinchToZoom    // source code of react-pinch-and-zoom
+│   └── demo           // source code of github demo page
+└── webpack.config.js
+```
+
+## Develop on local machine
+
+1. Pull this repository
+    ```console
+    [~/development] $ git pull https://github.com/conradlo/react-pinch-and-zoom.git
+    ```
+1. Install dependency
+    ```console
+    [~/development] $ cd react-pinch-and-zoom
+    [~/development/react-pinch-and-zoom] $ npm install
+    ```
+1. Start local development server
+    ```console
+    [~/development/react-pinch-and-zoom] $ npm run dev
+    ```
+1. Visit `localhost:3000` and edit `src/PinchToZoom/index.js`
+
+## Production build
+
+run `npm run build` will:
+
+1. transpile the component's source code (/lib)
+1. build and bundle the Github page (/docs)
+
+```console
+[~/development/react-pinch-and-zoom] $ npm run build
 ```
 
 ## Built With
@@ -68,11 +90,11 @@ A react container component with iOS UIScrollView's alike pinch-to-zoom gesture 
 * [Reactjs](https://reactjs.org/) - A JavaScript library for building user interfaces
 * [Sass](https://sass-lang.com/) - Syntactically Awesome Style Sheets
 * [Webpack](https://webpack.js.org/) - JavaScript module bundler
-* [Babel](http://babeljs.io/) - JavaScript transplier/compiler
+* [Babel](http://babeljs.io/) - JavaScript transpiler/compiler
 
 ## Contributing
 
-Please refer to [CONTRIBUTING.md](CONTRIBUTING.md) for details on code of conduct, and the process for submitting pull requests.
+Please refer to [CONTRIBUTING.md](https://github.com/conradlo/react-pinch-and-zoom/blob/master/CONTRIBUTING.md) for details on code of conduct, and the process for submitting pull requests.
 
 ## Versioning
 
@@ -80,7 +102,7 @@ This project uses [SemVer](http://semver.org/) for versioning. For the versions 
 
 ## License
 
-see the [LICENSE](LICENSE) file for details
+see the [LICENSE](https://github.com/conradlo/react-pinch-and-zoom/blob/master/LICENSE) file for details
 
 ## Acknowledgments
 

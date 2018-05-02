@@ -2,7 +2,7 @@
   "name": "react-pinch-and-zoom",
   "version": "0.0.3",
   "author": "Conrad Lo",
-  "description": "A react container component with iOS UIScrollView's alike pinch-to-zoom gesture interaction.",
+  "description": "A react container component with pinch-to-zoom gesture interaction.",
   "keywords": [
     "react",
     "reactjs",
