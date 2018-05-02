@@ -12,7 +12,7 @@ module.exports = {
   output: {
     path: github_page_path,
     filename: 'index.bundle.js',
-    publicPath: '/'
+    // publicPath: '/'
   },
   module: {
     rules: [
