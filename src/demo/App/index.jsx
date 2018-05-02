@@ -10,8 +10,8 @@ class App extends Component {
   render() {
     return (
       <div>
-        <h1>React Pinch and Zoom (HMR)</h1>
-        <PinchToZoom> 
+        <h1>React Pinch and Zoom</h1>
+        <PinchToZoom>
           <img className="inner-container" src={Img_demo_1}/>
         </PinchToZoom>
       </div>
