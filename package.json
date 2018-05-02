@@ -10,6 +10,7 @@
     "zoom",
     "pan"
   ],
+  "files": ["lib/"],
   "main": "lib/index.js",
   "repository": {
     "type": "git",
@@ -24,7 +25,7 @@
     "dev": "concurrently \"npm run lib:watch\" \"npm start\"",
     "lib": "babel src/PinchToZoom -d lib --copy-files",
     "lib:watch": "babel src/PinchToZoom -w -d lib --copy-files",
-    "build": "npm run lib && webpack --mode production"
+    "build": "NODE_ENV=production npm run lib && webpack --mode production"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
