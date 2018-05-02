@@ -1,6 +1,6 @@
 {
   "name": "react-pinch-and-zoom",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Conrad Lo",
   "description": "A react container component with pinch-to-zoom gesture interaction.",
   "keywords": [
@@ -10,7 +10,9 @@
     "zoom",
     "pan"
   ],
-  "files": ["lib/"],
+  "files": [
+    "lib/"
+  ],
   "main": "lib/index.js",
   "repository": {
     "type": "git",
