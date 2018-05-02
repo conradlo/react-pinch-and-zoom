@@ -1,4 +1,5 @@
 const express = require('express');
+const morgan = require('morgan');
 
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
@@ -8,6 +9,7 @@ const webpack_config = require('./webpack.config.js');
 const compiler = webpack(webpack_config);
 
 const app = express();
+app.use(morgan('tiny'));
 
 // Tell express to use the webpack-dev-middleware and use the webpack.config.js
 // configuration file as a base.

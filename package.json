@@ -21,6 +21,7 @@
   "scripts": {
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"npm run lib:watch\" \"npm start\"",
     "lib": "babel src/PinchToZoom -d lib --copy-files",
     "lib:watch": "babel src/PinchToZoom -w -d lib --copy-files"
   },
@@ -29,10 +30,12 @@
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
+    "concurrently": "^3.5.1",
     "css-loader": "^0.28.11",
     "express": "^4.16.3",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
+    "morgan": "^1.9.0",
     "node-sass": "^4.9.0",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
