@@ -71,8 +71,8 @@ class PinchToZoom extends Component {
   }
 
   componentDidMount() {
-    this.zoomContentArea(this.props.minZoomScale);
-    this.guardZoomAreaTranslate();
+    // this.zoomContentArea(this.props.minZoomScale);
+    // this.guardZoomAreaTranslate();
   }
 
   componentDidUpdate(prevProps) {
@@ -193,12 +193,12 @@ class PinchToZoom extends Component {
   /* validate translate value */
   guardZoomAreaTranslate() {
     const { currentZoomFactor, currentTranslate } = this.getTransform();
-    // if (currentZoomFactor < this.props.minZoomScale) { return; }
+    if (currentZoomFactor < this.props.minZoomScale) { return; }
 
     // full screen width container size
     const { boundSize } = this.props;
-    const containerW = boundSize.width; // this.zoomAreaContainer.clientWidth;
-    const containerH = boundSize.height;  // this.zoomAreaContainer.clientHeight;
+    const containerW = this.zoomAreaContainer.clientHeight; // boundSize.width; 
+    const containerH = this.zoomAreaContainer.clientHeight; // boundSize.height;
     // const containerRectRatio = containerW / containerH;
 
     // inner zoom area size
@@ -317,6 +317,7 @@ class PinchToZoom extends Component {
   */
 
   handleTouchStart(syntheticEvent) {
+    // syntheticEvent.preventDefault();
     // console.log('[touch start]');
     this.zoomArea.style.transitionDuration = '0.0s';
     // 2 touches == pinch, else all considered as pan
@@ -330,9 +331,9 @@ class PinchToZoom extends Component {
         const { currentZoomFactor } = this.getTransform();
         const [x, y] = PinchToZoom.getTouchesCoordinate(syntheticEvent);
         this.setState({ lastSingleTouchPoint: { x, y } });
-        if (currentZoomFactor === this.props.minZoomScale) {
-          return true;
-        }
+        // if (currentZoomFactor === this.props.minZoomScale) {
+        //   return true;
+        // }
         /*
           if we don't set `this.currentGesture = 'pan' `
           handleTouchMove won't trigger `this.onPanMove`
@@ -466,18 +467,44 @@ class PinchToZoom extends Component {
   */
 
   render() {
-    const { children, boundSize, contentSize } = this.props;
+    const { debug, className, children, boundSize, contentSize } = this.props;
+    
+    const _className = ['', 'pinch-to-zoom-container'];
 
-    const inlineStyle = {
-      minWidth: `${boundSize.width}px`,
-      height: `${boundSize.height}px`,
-      maxHeight: `${boundSize.height}px`,
+    // console.log(children.getBoundingClientRect());
+
+    const container_inline_style = {
+      display: 'inline-block',
+      // minWidth: `${boundSize.width}px`,
+      // maxHeight: `${boundSize.height}px`,
+      // height: `${boundSize.height}px`,
+      overflow: 'hidden',
     };
+
+    const zoom_area_inline_style = {
+      display: 'inline-block',
+      willChange: 'transform',
+      transformOrigin: '0px 0px 0px',
+      transition: 'transform 0ms ease',
+      transitionTimingFunction: 'cubic-bezier(0.1, 0.57, 0.1, 1)',
+      transitionDuration: '0ms',
+      backfaceVisibility: 'hidden',
+      perspective: 1000,
+
+      // minWidth: contentSize.width,
+      // minHeight: contentSize.height
+      width: '100%', // match `pinch-to-zoom-container` width
+    };
+
+    if (debug) {
+      _className.push('debug');
+      container_inline_style.backgroundColor = 'red';
+    }
 
     return (
       <div
-        className="pinch-to-zoom-container"
-        style={inlineStyle}
+        className={className.concat(_className.join(' '))}
+        style={container_inline_style}
         onTouchStart={e => this.handleTouchStart(e)}
         onTouchMove={e => this.handleTouchMove(e)}
         onTouchEnd={e => this.handleTouchEnd(e)}
@@ -485,8 +512,8 @@ class PinchToZoom extends Component {
       >
         <div
           className="pinch-to-zoom-area"
+          style={zoom_area_inline_style}
           ref={(c) => { this.zoomArea = c; }}
-          style={{ minWidth: contentSize.width, minHeight: contentSize.height }}
         >
           { children }
         </div>
@@ -496,6 +523,8 @@ class PinchToZoom extends Component {
 }
 
 PinchToZoom.defaultProps = {
+  debug: false,
+  className: "",
   minZoomScale: 1.0,
   maxZoomScale: 4.0,
   boundSize: {
@@ -509,6 +538,8 @@ PinchToZoom.defaultProps = {
 };
 
 PinchToZoom.propTypes = {
+  debug: PropTypes.bool,
+  className: PropTypes.string,
   minZoomScale: PropTypes.number,
   maxZoomScale: PropTypes.number,
   boundSize: PropTypes.shape({
