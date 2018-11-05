@@ -4,24 +4,33 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { distance, midpoint } from './algebra.ts';
+import { distance, midpoint, normalizePointInRect } from './algebra.ts';
 
 class PinchToZoom extends Component {
 
-  /*
-    helper method
-  */
   static getTouchesCoordinate(syntheticEvent) {
-    const coordinates = []; // [x1, y1, x2, y2...]
-    const eventTargetNode = syntheticEvent.currentTarget; // DOM node
-    const targetBounchRect = eventTargetNode.parentNode.getBoundingClientRect();
-    const touchList = syntheticEvent.nativeEvent.touches; // DOM touch list
+    /**
+     * adjust browser touch point coordinate to bounds
+     */
+    const { currentTarget, nativeEvent} = syntheticEvent
+    // DOM node
+    const containerRect = currentTarget.parentNode.getBoundingClientRect();
+    const rect = {
+      origin: { x: containerRect.left, y: containerRect.top },
+      width: containerRect.width,
+      height: containerRect.height,
+    }
+    // DOM touch list
+    const touchList = nativeEvent.touches;
+    const coordinates = []; // [{x1, y1}, {x2, y2}...]
     for (let i = 0; i < touchList.length; i += 1) {
       const touch = touchList.item(i);
-      coordinates.push({
-        x: touch.clientX - targetBounchRect.left,
-        y: touch.clientY - targetBounchRect.top
-      });
+      const touchPoint = {
+        x: touch.clientX,
+        y: touch.clientY
+      }
+      const p = normalizePointInRect(touchPoint, rect)
+      coordinates.push(p);
     }
     return coordinates;
   }
@@ -60,16 +69,11 @@ class PinchToZoom extends Component {
     };
   }
 
-  componentDidMount() {
-    // this.zoomContentArea(this.props.minZoomScale);
-    // this.guardZoomAreaTranslate();
-  }
+  componentDidMount() {}
 
   componentDidUpdate(prevProps) {
     if (prevProps.minZoomScale !== this.props.minZoomScale
         || prevProps.boundSize.height !== this.props.boundSize.height) {
-      // console.log('componentDidUpdate@prevProps', prevProps);
-      // console.log('componentDidUpdate@currentProps', this.props);
       this.zoomContentArea(this.props.minZoomScale);
       this.guardZoomAreaTranslate();
     }
@@ -79,8 +83,6 @@ class PinchToZoom extends Component {
   */
 
   onPinchStart(syntheticEvent) {
-    syntheticEvent.preventDefault();
-
     const [p1, p2] = PinchToZoom.getTouchesCoordinate(syntheticEvent);
 
     // on pinch start remember the mid point of 2 touch points
@@ -99,8 +101,6 @@ class PinchToZoom extends Component {
   }
 
   onPinchMove(syntheticEvent) {
-    syntheticEvent.preventDefault();
-
     // get lastest touch point coordinate
     const [p1, p2] = PinchToZoom.getTouchesCoordinate(syntheticEvent);
 
@@ -117,7 +117,6 @@ class PinchToZoom extends Component {
   }
 
   onPinchEnd(syntheticEvent) {
-    syntheticEvent.preventDefault();
     this.guardZoomAreaScale();
     this.guardZoomAreaTranslate();
   }
@@ -126,13 +125,11 @@ class PinchToZoom extends Component {
     Pan event handlers
   */
   onPanStart(syntheticEvent) {
-    // console.log('[PinchToZoom:onPanStart]');
     /*
       don't need to set e.preventDefault() here
       for one: this clause doesn't cause any visual effect
       for two: to preserve child element's ability to receive touch event
      */
-    // syntheticEvent.preventDefault();
     const [p1] = PinchToZoom.getTouchesCoordinate(syntheticEvent);
     this.panStartPoint = p1;
 
@@ -142,7 +139,6 @@ class PinchToZoom extends Component {
   }
 
   onPanMove(syntheticEvent) {
-    syntheticEvent.preventDefault();
     const { currentZoomFactor } = this.getTransform();
     const [{x: touchX, y: touchY}] = PinchToZoom.getTouchesCoordinate(syntheticEvent);
     const deltaX = (touchX - this.panStartPoint.x) / currentZoomFactor;
@@ -150,69 +146,53 @@ class PinchToZoom extends Component {
     const newTranslateX = deltaX + this.panStartTranslate.x;
     const newTranslateY = deltaY + this.panStartTranslate.y;
     this.panContentArea(newTranslateX, newTranslateY);
-    // console.log('[PinchToZoom:on pan move]', newTranslateX, newTranslateY);
   }
 
   onPanEnd() {
-    // console.log('[PinchToZoom:onPanEnd]');
     /*
       don't need to set e.preventDefault() here
       for one: this clause doesn't cause any visual effect
       for two: to preserve child element's ability to receive touch event
      */
-    // syntheticEvent.preventDefault();
     this.guardZoomAreaTranslate();
   }
 
   /* validate zoom factor value */
   guardZoomAreaScale() {
     const { currentZoomFactor } = this.getTransform();
-    let newZoomFactor = currentZoomFactor;
-
-    if (currentZoomFactor > this.props.maxZoomScale) {
-      newZoomFactor = this.props.maxZoomScale;
-    } else if (currentZoomFactor < this.props.minZoomScale) {
-      newZoomFactor = this.props.minZoomScale;
-    }
-
-    if (newZoomFactor !== currentZoomFactor) {
-      this.zoomContentArea(newZoomFactor);
+    const { minZoomScale, maxZoomScale } = this.props;
+    if (currentZoomFactor > maxZoomScale) {
+      this.zoomContentArea(maxZoomScale);
+    } else if (currentZoomFactor < minZoomScale) {
+      this.zoomContentArea(minZoomScale);
     }
   }
 
   /* validate translate value */
   guardZoomAreaTranslate() {
     const { currentZoomFactor, currentTranslate } = this.getTransform();
-    if (currentZoomFactor < this.props.minZoomScale) { return; }
+    const { minZoomScale } = this.props;
+    if (currentZoomFactor < minZoomScale) { return; }
+    
+    // container size
+    const { clientWidth: containerW, clientHeight: containerH } = this.zoomAreaContainer
 
-    // full screen width container size
-    const { boundSize } = this.props;
-    const containerW = this.zoomAreaContainer.clientHeight; // boundSize.width; 
-    const containerH = this.zoomAreaContainer.clientHeight; // boundSize.height;
-    // const containerRectRatio = containerW / containerH;
-
-    // inner zoom area size
-    // this.props.contentSize.width; // must use contentSize for webkit on iOS 9
-    const w = this.zoomArea.clientWidth;
-     //his.props.contentSize.height + 32 + 32 + 23;
-    const h = this.zoomArea.clientHeight;
-    // const zoomAreaRatio = w / h;
+    // zoom area size
+    const {clientWidth: w, clientHeight: h} = this.zoomArea;
 
     //
-    const adjustedTranslate = { x: currentTranslate.x, y: currentTranslate.y };
+    const { x: old_x, y: old_y } = currentTranslate
+    const adjustedTranslate = { x: old_x, y: old_y };
 
     const screenW = w * currentZoomFactor;
     const screenH = h * currentZoomFactor;
 
     const maxPositiveX = (containerW - screenW) / (2 * currentZoomFactor);
     const maxPositiveY = (containerH - screenH) / (2 * currentZoomFactor);
-    // console.log('maxPositiveY: ', `${containerH} - ${screenH} / (2 * ${currentZoomFactor})`);
     const maxPositiveTranslate = {
       x: maxPositiveX > 0 ? Math.trunc(maxPositiveX * 10000) / 10000 : 0,
       y: maxPositiveY > 0 ? Math.trunc(maxPositiveY * 10000) / 10000 : 0,
     };
-
-    // console.log('[PinchToZoom] maxPositiveTranslate: { x: %s, y: %s } ', maxPositiveTranslate.x, maxPositiveTranslate.y);
 
     if (currentTranslate.x > maxPositiveTranslate.x) {
       adjustedTranslate.x = maxPositiveTranslate.x;
@@ -235,10 +215,6 @@ class PinchToZoom extends Component {
       y: Math.trunc(maxNegativeY * 10000) / 10000,
     };
 
-    // console.log('[PinchToZoom] maxNegativeTranslate: { x: %s, y: %s } ', maxNegativeTranslate.x, maxNegativeTranslate.y);
-
-    // console.log('[guardZoomAreaTranslate] ', ` ${maxNegativeTranslate.x} = (${containerW} - (${w} * ${currentZoomFactor})) / ${currentZoomFactor}`);
-
     if (currentTranslate.x < maxNegativeTranslate.x) {
       adjustedTranslate.x = maxNegativeTranslate.x;
     }
@@ -255,7 +231,6 @@ class PinchToZoom extends Component {
 
   /* perform pan transfrom */
   panContentArea(translateX, translateY) {
-    // console.log('[panContentArea@PinchToZoom] { x: %s, y: %s }', translateX, translateY);
     this.setTransform({
       translate: {
         x: translateX,
@@ -307,8 +282,6 @@ class PinchToZoom extends Component {
   */
 
   handleTouchStart(syntheticEvent) {
-    // syntheticEvent.preventDefault();
-    // console.log('[touch start]');
     this.zoomArea.style.transitionDuration = '0.0s';
     // 2 touches == pinch, else all considered as pan
     switch (syntheticEvent.nativeEvent.touches.length) {
@@ -321,9 +294,6 @@ class PinchToZoom extends Component {
         const { currentZoomFactor } = this.getTransform();
         const [p1] = PinchToZoom.getTouchesCoordinate(syntheticEvent);
         this.setState({ lastSingleTouchPoint: p1 });
-        // if (currentZoomFactor === this.props.minZoomScale) {
-        //   return true;
-        // }
         /*
           if we don't set `this.currentGesture = 'pan' `
           handleTouchMove won't trigger `this.onPanMove`
@@ -350,7 +320,6 @@ class PinchToZoom extends Component {
   }
 
   handleTouchEnd(syntheticEvent) {
-    // console.log('[touch end]');
     this.zoomArea.style.transitionDuration = '0.3s';
     if (this.currentGesture === 'pinch') {
       this.onPinchEnd(syntheticEvent);
@@ -373,8 +342,6 @@ class PinchToZoom extends Component {
     console.log('[autoZoomToPosition] autoZoomToPosition: ', x, y);
     const autoZoomFactor = 2.0;
     const { currentZoomFactor, currentTranslate } = this.getTransform();
-    // const zoomAreaW = this.zoomArea.clientWidth;
-    // const zoomAreaH = this.zoomArea.clientHeight;
     const zoomAreaContainerW = this.zoomAreaContainer.clientWidth;
     const zoomAreaContainerH = this.zoomAreaContainer.clientHeight;
 
@@ -392,12 +359,8 @@ class PinchToZoom extends Component {
       x: deltaX / autoZoomFactor,
       y: deltaY / autoZoomFactor,
     };
-    // console.log('[autoZoomToPosition] move touch point to center: ', inScaleTranslate);
-    // this.panContentArea(targetTranslate.x, targetTranslate.y);
 
     // update zoom scale and corresponding translate
-    // console.log('[autoZoomToPosition] set transformOrigin: ', zoomAreaX, zoomAreaY);
-    // this.zoomArea.style.transformOrigin = `${zoomAreaX}px ${zoomAreaY}px 0px`;
     this.zoomArea.style.transitionDuration = '0.3s';
     this.setTransform({
       zoomFactor: autoZoomFactor,
@@ -426,7 +389,6 @@ class PinchToZoom extends Component {
     this.transform.zoomFactor = zoomFactor;
     this.transform.translate.x = roundTransalteX;
     this.transform.translate.y = roundTransalteY;
-    // console.log('[setTransform] ', this.transform);
 
     // update the transform style
     const styleString = `
@@ -461,13 +423,8 @@ class PinchToZoom extends Component {
     
     const _className = ['', 'pinch-to-zoom-container'];
 
-    // console.log(children.getBoundingClientRect());
-
     const container_inline_style = {
       display: 'inline-block',
-      // minWidth: `${boundSize.width}px`,
-      // maxHeight: `${boundSize.height}px`,
-      // height: `${boundSize.height}px`,
       overflow: 'hidden',
     };
 
@@ -480,9 +437,6 @@ class PinchToZoom extends Component {
       transitionDuration: '0ms',
       backfaceVisibility: 'hidden',
       perspective: 1000,
-
-      // minWidth: contentSize.width,
-      // minHeight: contentSize.height
       width: '100%', // match `pinch-to-zoom-container` width
     };
 

@@ -4,6 +4,12 @@ interface Point {
   y: number;
 }
 
+interface Rect {
+  origin: Point,
+  width: number,
+  height: number
+}
+
 function distance(p1: Point, p2: Point): number {
   // Pythagorean Theorem: c^2 = a^2 + b^2
   const { x: x1, y: y1 } = p1;
@@ -18,7 +24,15 @@ function midpoint(p1: Point, p2: Point): Point {
   };
 }
 
+function normalizePointInRect(point: Point, rect: Rect) {
+  return {
+    x: point.x - rect.origin.x,
+    y: point.y - rect.origin.y
+  }
+}
+
 export {
   distance,
-  midpoint
+  midpoint,
+  normalizePointInRect
 }
