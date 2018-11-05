@@ -7,6 +7,8 @@ import PropTypes from 'prop-types'
 import * as Point from './Point.ts'
 import * as Size from './Size.ts'
 
+const truncRound = num => Math.trunc(num * 10000) / 10000
+
 class PinchToZoom extends Component {
   static getTouchesCoordinate(syntheticEvent) {
     /**
@@ -197,8 +199,8 @@ class PinchToZoom extends Component {
     )
 
     const maxPositiveTranslate = {
-      x: maxLeft > 0 ? Math.trunc(maxLeft * 10000) / 10000 : 0,
-      y: maxTop > 0 ? Math.trunc(maxTop * 10000) / 10000 : 0,
+      x: maxLeft > 0 ? truncRound(maxLeft) : 0,
+      y: maxTop > 0 ? truncRound(maxTop) : 0,
     }
 
     const { width: maxRight, height: maxBottom } = Size.scale(
@@ -209,8 +211,8 @@ class PinchToZoom extends Component {
     const maxNegativeX = Math.min(maxRight, maxPositiveTranslate.x)
     const maxNegativeY = Math.min(maxBottom, maxPositiveTranslate.y)
     const maxNegativeTranslate = {
-      x: Math.trunc(maxNegativeX * 10000) / 10000,
-      y: Math.trunc(maxNegativeY * 10000) / 10000,
+      x: truncRound(maxNegativeX),
+      y: truncRound(maxNegativeY),
     }
 
     const validate = Point.boundWithin(
@@ -219,10 +221,7 @@ class PinchToZoom extends Component {
       maxPositiveTranslate
     )
 
-    if (
-      validate.x !== currentTranslate.x ||
-      validate.y !== currentTranslate.y
-    ) {
+    if (!Point.isEqual(validate, currentTranslate)) {
       this.panContentArea(validate)
     }
   }
@@ -240,42 +239,38 @@ class PinchToZoom extends Component {
   /* perform zooming transfrom */
   zoomContentArea(zoomFactor) {
     // calculate delta translate needed
-    const w = this.zoomAreaContainer.clientWidth
-    const h = this.zoomAreaContainer.clientHeight
+    const prevZoomFactor = this.pinchStartZoomFactor
+    const originalTranslate = this.pinchStartTranslate
+
+    const boundSize = {
+      width: this.zoomAreaContainer.clientWidth,
+      height: this.zoomAreaContainer.clientHeight,
+    }
+
+    const prevZoomSize = Size.scale(boundSize, prevZoomFactor)
+    const nextZoomSize = Size.scale(boundSize, zoomFactor)
 
     const centerOriginal = {
-      x: (w * this.pinchStartZoomFactor) / 2,
-      y: (h * this.pinchStartZoomFactor) / 2,
+      x: prevZoomSize.width / 2,
+      y: prevZoomSize.height / 2,
     }
 
     const centerScale = {
-      x: (w * zoomFactor) / 2,
-      y: (h * zoomFactor) / 2,
+      x: nextZoomSize.width / 2,
+      y: nextZoomSize.height / 2,
     }
 
-    const deltaTranslate = {
-      x:
-        (centerOriginal.x - centerScale.x) /
-        (zoomFactor * this.pinchStartZoomFactor),
-      y:
-        (centerOriginal.y - centerScale.y) /
-        (zoomFactor * this.pinchStartZoomFactor),
-    }
+    const deltaTranslate = Point.scale(
+      Point.offset(centerOriginal, centerScale),
+      1 / (zoomFactor * prevZoomFactor)
+    )
 
-    const originalTranslate = this.pinchStartTranslate
-
-    const targetTranslate = {
-      x: deltaTranslate.x + originalTranslate.x,
-      y: deltaTranslate.y + originalTranslate.y,
-    }
+    const accumulateTranslate = Point.sum(deltaTranslate, originalTranslate)
 
     // update zoom scale and corresponding translate
     this.setTransform({
-      zoomFactor: Math.trunc(zoomFactor * 10000) / 10000,
-      translate: {
-        x: targetTranslate.x,
-        y: targetTranslate.y,
-      },
+      zoomFactor: truncRound(zoomFactor),
+      translate: accumulateTranslate,
     })
   }
 
@@ -409,11 +404,12 @@ class PinchToZoom extends Component {
     get a *copy* of current zoom area transformation value
   */
   getTransform() {
+    const { zoomFactor, translate } = this.transform
     return {
-      currentZoomFactor: this.transform.zoomFactor,
+      currentZoomFactor: zoomFactor,
       currentTranslate: {
-        x: this.transform.translate.x,
-        y: this.transform.translate.y,
+        x: translate.x,
+        y: translate.y,
       },
     }
   }

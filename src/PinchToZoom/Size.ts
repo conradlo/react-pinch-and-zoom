@@ -21,4 +21,8 @@ function diff(m: Size, n: Size): Size {
   }
 }
 
-export { Size, scale, diff }
+function isEqual(m: Size, n: Size): boolean {
+  return m.width === n.width && m.height === n.height
+}
+
+export { Size, scale, diff, isEqual }

@@ -44,6 +44,10 @@ function sum(p1: Point, p2: Point): Point {
   }
 }
 
+function isEqual(p1: Point, p2: Point): boolean {
+  return p1.x === p2.x && p1.y === p2.y
+}
+
 function boundWithin(min: Point, current: Point, max: Point): Point {
   const numberWithin = (left: number, num: number, right: number) => {
     return num > left ? left : right > num ? right : num
@@ -69,6 +73,7 @@ export {
   sum,
   map,
   scale,
+  isEqual,
   boundWithin,
   normalizePointInRect,
 }
