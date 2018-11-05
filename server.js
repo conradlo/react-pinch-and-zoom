@@ -13,9 +13,7 @@ app.use(morgan('tiny'));
 
 // Tell express to use the webpack-dev-middleware and use the webpack.config.js
 // configuration file as a base.
-app.use(webpackDevMiddleware(compiler, {
-  publicPath: webpack_config.output.publicPath
-}));
+app.use(webpackDevMiddleware(compiler));
 
 app.use(webpackHotMiddleware(compiler));
 
