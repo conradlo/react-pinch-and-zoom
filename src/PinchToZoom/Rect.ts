@@ -1,15 +1,9 @@
 import { Point } from './Point'
-
-interface Size {
-  width: number,
-  height: number
-}
+import { Size } from './Size'
 
 interface Rect {
-  origin: Point,
+  origin: Point
   size: Size
 }
 
-export {
-  Rect
-}
+export { Rect }

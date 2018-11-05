@@ -5,6 +5,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import * as Point from './Point.ts'
+import * as Size from './Size.ts'
 
 class PinchToZoom extends Component {
   static getTouchesCoordinate(syntheticEvent) {
@@ -139,7 +140,7 @@ class PinchToZoom extends Component {
     const prevTranslate = this.panStartTranslate
 
     const dragOffset = Point.offset(dragPoint, origin)
-    const adjustedZoomOffset = Point.map(dragOffset, v => v / currentZoomFactor)
+    const adjustedZoomOffset = Point.scale(dragOffset, 1 / currentZoomFactor)
     const nextTranslate = Point.sum(adjustedZoomOffset, prevTranslate)
     this.panContentArea(nextTranslate)
   }
@@ -168,62 +169,61 @@ class PinchToZoom extends Component {
     }
 
     // container size
-    const {
-      clientWidth: containerW,
-      clientHeight: containerH,
-    } = this.zoomAreaContainer
-
-    // zoom area size
-    const { clientWidth: w, clientHeight: h } = this.zoomArea
+    const boundSize = {
+      width: this.zoomAreaContainer.clientWidth,
+      height: this.zoomAreaContainer.clientHeight,
+    }
 
     //
-    const { x: old_x, y: old_y } = currentTranslate
-    const adjustedTranslate = { x: old_x, y: old_y }
+    const contentRect = {
+      origin: {
+        x: currentTranslate.x,
+        y: currentTranslate.y,
+      },
+      size: Size.scale(
+        {
+          width: this.zoomArea.clientWidth,
+          height: this.zoomArea.clientHeight,
+        },
+        currentZoomFactor
+      ),
+    }
 
-    const screenW = w * currentZoomFactor
-    const screenH = h * currentZoomFactor
+    const diff = Size.diff(boundSize, contentRect.size)
 
-    const maxPositiveX = (containerW - screenW) / (2 * currentZoomFactor)
-    const maxPositiveY = (containerH - screenH) / (2 * currentZoomFactor)
+    const { width: maxLeft, height: maxTop } = Size.scale(
+      diff,
+      1 / (2 * currentZoomFactor)
+    )
+
     const maxPositiveTranslate = {
-      x: maxPositiveX > 0 ? Math.trunc(maxPositiveX * 10000) / 10000 : 0,
-      y: maxPositiveY > 0 ? Math.trunc(maxPositiveY * 10000) / 10000 : 0,
+      x: maxLeft > 0 ? Math.trunc(maxLeft * 10000) / 10000 : 0,
+      y: maxTop > 0 ? Math.trunc(maxTop * 10000) / 10000 : 0,
     }
 
-    if (currentTranslate.x > maxPositiveTranslate.x) {
-      adjustedTranslate.x = maxPositiveTranslate.x
-    }
-
-    if (currentTranslate.y > maxPositiveTranslate.y) {
-      adjustedTranslate.y = maxPositiveTranslate.y
-    }
-
-    const maxNegativeX = Math.min(
-      (containerW - screenW) / currentZoomFactor,
-      maxPositiveTranslate.x
+    const { width: maxRight, height: maxBottom } = Size.scale(
+      diff,
+      1 / currentZoomFactor
     )
-    const maxNegativeY = Math.min(
-      (containerH - screenH) / currentZoomFactor,
-      maxPositiveTranslate.y
-    )
+
+    const maxNegativeX = Math.min(maxRight, maxPositiveTranslate.x)
+    const maxNegativeY = Math.min(maxBottom, maxPositiveTranslate.y)
     const maxNegativeTranslate = {
       x: Math.trunc(maxNegativeX * 10000) / 10000,
       y: Math.trunc(maxNegativeY * 10000) / 10000,
     }
 
-    if (currentTranslate.x < maxNegativeTranslate.x) {
-      adjustedTranslate.x = maxNegativeTranslate.x
-    }
-
-    if (currentTranslate.y < maxNegativeTranslate.y) {
-      adjustedTranslate.y = maxNegativeTranslate.y
-    }
+    const validate = Point.boundWithin(
+      maxNegativeTranslate,
+      currentTranslate,
+      maxPositiveTranslate
+    )
 
     if (
-      adjustedTranslate.x !== currentTranslate.x ||
-      adjustedTranslate.y !== currentTranslate.y
+      validate.x !== currentTranslate.x ||
+      validate.y !== currentTranslate.y
     ) {
-      this.panContentArea(adjustedTranslate)
+      this.panContentArea(validate)
     }
   }
 
