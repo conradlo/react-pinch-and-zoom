@@ -16,8 +16,10 @@ class PinchToZoom extends Component {
     const containerRect = currentTarget.parentNode.getBoundingClientRect()
     const rect = {
       origin: { x: containerRect.left, y: containerRect.top },
-      width: containerRect.width,
-      height: containerRect.height,
+      size: {
+        width: containerRect.width,
+        height: containerRect.height,
+      },
     }
     // DOM touch list
     const touchList = nativeEvent.touches
@@ -33,10 +35,6 @@ class PinchToZoom extends Component {
     }
     return coordinates
   }
-
-  /*
-    React constructure
-  */
 
   constructor(props) {
     super(props)
@@ -127,11 +125,6 @@ class PinchToZoom extends Component {
     Pan event handlers
   */
   onPanStart(syntheticEvent) {
-    /*
-      don't need to set e.preventDefault() here
-      for one: this clause doesn't cause any visual effect
-      for two: to preserve child element's ability to receive touch event
-     */
     const [p1] = PinchToZoom.getTouchesCoordinate(syntheticEvent)
     const { currentTranslate } = this.getTransform()
 
@@ -146,20 +139,12 @@ class PinchToZoom extends Component {
     const prevTranslate = this.panStartTranslate
 
     const dragOffset = Point.offset(dragPoint, origin)
-    const adjustedZoomeOffset = Point.map(
-      dragOffset,
-      v => v / currentZoomFactor
-    )
-    const nextTranslate = Point.sum(adjustedZoomeOffset, prevTranslate)
-    this.panContentArea(nextTranslate.x, nextTranslate.y)
+    const adjustedZoomOffset = Point.map(dragOffset, v => v / currentZoomFactor)
+    const nextTranslate = Point.sum(adjustedZoomOffset, prevTranslate)
+    this.panContentArea(nextTranslate)
   }
 
   onPanEnd() {
-    /*
-      don't need to set e.preventDefault() here
-      for one: this clause doesn't cause any visual effect
-      for two: to preserve child element's ability to receive touch event
-     */
     this.guardZoomAreaTranslate()
   }
 
@@ -238,16 +223,16 @@ class PinchToZoom extends Component {
       adjustedTranslate.x !== currentTranslate.x ||
       adjustedTranslate.y !== currentTranslate.y
     ) {
-      this.panContentArea(adjustedTranslate.x, adjustedTranslate.y)
+      this.panContentArea(adjustedTranslate)
     }
   }
 
   /* perform pan transfrom */
-  panContentArea(translateX, translateY) {
+  panContentArea({ x, y }) {
     this.setTransform({
       translate: {
-        x: translateX,
-        y: translateY,
+        x,
+        y,
       },
     })
   }

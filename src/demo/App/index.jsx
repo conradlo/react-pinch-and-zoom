@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { hot } from 'react-hot-loader'
 import './style.scss'
 
 import PinchToZoom from 'lib'
-import img_demo_1 from 'demo/img/demo_1.png'
+import sq from 'demo/img/img_grid_square.jpg'
 
 class App extends Component {
   render() {
@@ -15,7 +14,7 @@ class App extends Component {
         </header>
         <div className="w3-container w3-quarter" />
         <PinchToZoom className="w3-half">
-          <img src={img_demo_1} />
+          <img src={sq} />
         </PinchToZoom>
       </div>
     )
