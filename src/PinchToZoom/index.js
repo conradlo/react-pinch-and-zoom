@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-// import './PinchToZoom.scss';
+import { distance, midpoint } from './algebra.ts';
 
 class PinchToZoom extends Component {
 
@@ -18,22 +18,12 @@ class PinchToZoom extends Component {
     const touchList = syntheticEvent.nativeEvent.touches; // DOM touch list
     for (let i = 0; i < touchList.length; i += 1) {
       const touch = touchList.item(i);
-      coordinates.push(touch.clientX - targetBounchRect.left);
-      coordinates.push(touch.clientY - targetBounchRect.top);
+      coordinates.push({
+        x: touch.clientX - targetBounchRect.left,
+        y: touch.clientY - targetBounchRect.top
+      });
     }
     return coordinates;
-  }
-
-  static calculateDistance({ x1, y1 }, { x2, y2 }) {
-    // Pythagorean Theorem: c^2 = a^2 + b^2
-    return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
-  }
-
-  static calculateMidpoint({ x1, y1 }, { x2, y2 }) {
-    return {
-      x: (x1 + x2) / 2,
-      y: (y1 + y2) / 2,
-    };
   }
 
   /*
@@ -91,13 +81,13 @@ class PinchToZoom extends Component {
   onPinchStart(syntheticEvent) {
     syntheticEvent.preventDefault();
 
-    const [x1, y1, x2, y2] = PinchToZoom.getTouchesCoordinate(syntheticEvent);
+    const [p1, p2] = PinchToZoom.getTouchesCoordinate(syntheticEvent);
 
     // on pinch start remember the mid point of 2 touch points
-    this.pinchStartTouchMidpoint = PinchToZoom.calculateMidpoint({ x1, y1 }, { x2, y2 });
+    this.pinchStartTouchMidpoint = midpoint(p1, p2);
 
     // on pinch start remember the distance of 2 touch points
-    this.pinchStartTouchPointDist = PinchToZoom.calculateDistance({ x1, y1 }, { x2, y2 });
+    this.pinchStartTouchPointDist = distance(p1, p2);
 
     /*
       on pinch start, remember the `origianl zoom factor`
@@ -112,11 +102,11 @@ class PinchToZoom extends Component {
     syntheticEvent.preventDefault();
 
     // get lastest touch point coordinate
-    const [x1, y1, x2, y2] = PinchToZoom.getTouchesCoordinate(syntheticEvent);
+    const [p1, p2] = PinchToZoom.getTouchesCoordinate(syntheticEvent);
 
     // const pinchCurrentTouchMidpoint = SeatingPlan.calculateMidpoint({ x1, y1 }, { x2, y2 });
 
-    const pinchCurrentTouchPointDist = PinchToZoom.calculateDistance({ x1, y1 }, { x2, y2 });
+    const pinchCurrentTouchPointDist = distance(p1, p2);
 
     // delta > 0: enlarge(zoon in), delta < 0: diminish(zoom out)
     const deltaTouchPointDist = pinchCurrentTouchPointDist - this.pinchStartTouchPointDist;
@@ -143,8 +133,8 @@ class PinchToZoom extends Component {
       for two: to preserve child element's ability to receive touch event
      */
     // syntheticEvent.preventDefault();
-    const [x, y] = PinchToZoom.getTouchesCoordinate(syntheticEvent);
-    this.panStartPoint = { x, y };
+    const [p1] = PinchToZoom.getTouchesCoordinate(syntheticEvent);
+    this.panStartPoint = p1;
 
     const { currentTranslate } = this.getTransform();
 
@@ -154,7 +144,7 @@ class PinchToZoom extends Component {
   onPanMove(syntheticEvent) {
     syntheticEvent.preventDefault();
     const { currentZoomFactor } = this.getTransform();
-    const [touchX, touchY] = PinchToZoom.getTouchesCoordinate(syntheticEvent);
+    const [{x: touchX, y: touchY}] = PinchToZoom.getTouchesCoordinate(syntheticEvent);
     const deltaX = (touchX - this.panStartPoint.x) / currentZoomFactor;
     const deltaY = (touchY - this.panStartPoint.y) / currentZoomFactor;
     const newTranslateX = deltaX + this.panStartTranslate.x;
@@ -329,8 +319,8 @@ class PinchToZoom extends Component {
       default: {
         /* don't allow pan if zoom factor === minZoomScale */
         const { currentZoomFactor } = this.getTransform();
-        const [x, y] = PinchToZoom.getTouchesCoordinate(syntheticEvent);
-        this.setState({ lastSingleTouchPoint: { x, y } });
+        const [p1] = PinchToZoom.getTouchesCoordinate(syntheticEvent);
+        this.setState({ lastSingleTouchPoint: p1 });
         // if (currentZoomFactor === this.props.minZoomScale) {
         //   return true;
         // }

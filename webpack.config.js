@@ -9,13 +9,18 @@ const config_base = {
   output: {
     path: github_page_path,
     publicPath: '/',
-    filename: 'index.bundle.js',
+    filename: 'index.bundle.[hash].js',
   },
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
         use: "babel-loader",
+        exclude: /node_modules/
+      },
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
         exclude: /node_modules/
       },
       {
