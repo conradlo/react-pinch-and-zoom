@@ -1,9 +1,9 @@
-const path = require('path');
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const webpack = require('webpack');
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const webpack = require('webpack')
 
-const github_page_source_path = path.resolve(__dirname, 'src/demo');
-const github_page_path = path.resolve(__dirname, 'docs');
+const github_page_source_path = path.resolve(__dirname, 'src/demo')
+const github_page_path = path.resolve(__dirname, 'docs')
 
 const config_base = {
   output: {
@@ -15,37 +15,37 @@ const config_base = {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        use: "babel-loader",
-        exclude: /node_modules/
+        use: ['babel-loader', 'eslint-loader'],
+        exclude: /node_modules/,
       },
       {
         test: /\.tsx?$/,
         use: 'ts-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"]
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.scss$/,
-        use: ["style-loader", "css-loader", "sass-loader"]
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
-        use: ["file-loader"]
-      }
-    ]
+        use: ['file-loader'],
+      },
+    ],
   },
   resolve: {
     modules: [
       path.resolve('./'),
       path.resolve('./src'),
-      path.resolve('./node_modules')
+      path.resolve('./node_modules'),
     ],
-    extensions: [".js", ".jsx"]
+    extensions: ['.js', '.jsx'],
   },
-};
+}
 
 const config_dev = Object.assign({}, config_base, {
   mode: 'development',
@@ -53,11 +53,11 @@ const config_dev = Object.assign({}, config_base, {
   entry: [github_page_source_path, 'webpack-hot-middleware/client'],
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, "src/demo/index.html")
+      template: path.resolve(__dirname, 'src/demo/index.html'),
     }),
-    new webpack.HotModuleReplacementPlugin()
-  ]
-});
+    new webpack.HotModuleReplacementPlugin(),
+  ],
+})
 
 const config_prod = Object.assign({}, config_base, {
   mode: 'production',
@@ -65,9 +65,9 @@ const config_prod = Object.assign({}, config_base, {
   entry: [github_page_source_path],
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, "src/demo/index.html")
-    })
-  ]
-});
+      template: path.resolve(__dirname, 'src/demo/index.html'),
+    }),
+  ],
+})
 
-module.exports = [config_dev, config_prod];
+module.exports = [config_dev, config_prod]
