@@ -1,13 +1,8 @@
+import { Rect } from './Rect'
 
 interface Point {
   x: number;
   y: number;
-}
-
-interface Rect {
-  origin: Point,
-  width: number,
-  height: number
 }
 
 function distance(p1: Point, p2: Point): number {
@@ -24,6 +19,27 @@ function midpoint(p1: Point, p2: Point): Point {
   };
 }
 
+function offset(p: Point, origin: Point): Point {
+  return {
+    x: p.x - origin.x,
+    y: p.y - origin.y
+  }
+}
+
+function map(p: Point, f: (n: number) => number): Point {
+  return {
+    x: f(p.x),
+    y: f(p.y)
+  }
+}
+
+function sum(p1: Point, p2: Point): Point {
+  return {
+    x: p1.x + p2.x,
+    y: p1.y + p2.y
+  }
+}
+
 function normalizePointInRect(point: Point, rect: Rect) {
   return {
     x: point.x - rect.origin.x,
@@ -32,7 +48,11 @@ function normalizePointInRect(point: Point, rect: Rect) {
 }
 
 export {
+  Point,
   distance,
   midpoint,
+  offset,
+  sum,
+  map,
   normalizePointInRect
 }

@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { distance, midpoint, normalizePointInRect } from './algebra.ts'
+import * as Point from './Point.ts'
 
 class PinchToZoom extends Component {
   static getTouchesCoordinate(syntheticEvent) {
@@ -28,7 +28,7 @@ class PinchToZoom extends Component {
         x: touch.clientX,
         y: touch.clientY,
       }
-      const p = normalizePointInRect(touchPoint, rect)
+      const p = Point.normalizePointInRect(touchPoint, rect)
       coordinates.push(p)
     }
     return coordinates
@@ -87,10 +87,10 @@ class PinchToZoom extends Component {
     const [p1, p2] = PinchToZoom.getTouchesCoordinate(syntheticEvent)
 
     // on pinch start remember the mid point of 2 touch points
-    this.pinchStartTouchMidpoint = midpoint(p1, p2)
+    this.pinchStartTouchMidpoint = Point.midpoint(p1, p2)
 
     // on pinch start remember the distance of 2 touch points
-    this.pinchStartTouchPointDist = distance(p1, p2)
+    this.pinchStartTouchPointDist = Point.distance(p1, p2)
 
     /*
       on pinch start, remember the `origianl zoom factor`
@@ -107,7 +107,7 @@ class PinchToZoom extends Component {
 
     // const pinchCurrentTouchMidpoint = SeatingPlan.calculateMidpoint({ x1, y1 }, { x2, y2 });
 
-    const pinchCurrentTouchPointDist = distance(p1, p2)
+    const pinchCurrentTouchPointDist = Point.distance(p1, p2)
 
     // delta > 0: enlarge(zoon in), delta < 0: diminish(zoom out)
     const deltaTouchPointDist =
@@ -118,7 +118,7 @@ class PinchToZoom extends Component {
     this.zoomContentArea(newZoomFactor)
   }
 
-  onPinchEnd(syntheticEvent) {
+  onPinchEnd() {
     this.guardZoomAreaScale()
     this.guardZoomAreaTranslate()
   }
@@ -133,23 +133,25 @@ class PinchToZoom extends Component {
       for two: to preserve child element's ability to receive touch event
      */
     const [p1] = PinchToZoom.getTouchesCoordinate(syntheticEvent)
-    this.panStartPoint = p1
-
     const { currentTranslate } = this.getTransform()
 
+    this.panStartPoint = p1
     this.panStartTranslate = currentTranslate
   }
 
   onPanMove(syntheticEvent) {
+    const [dragPoint] = PinchToZoom.getTouchesCoordinate(syntheticEvent)
     const { currentZoomFactor } = this.getTransform()
-    const [{ x: touchX, y: touchY }] = PinchToZoom.getTouchesCoordinate(
-      syntheticEvent
+    const origin = this.panStartPoint
+    const prevTranslate = this.panStartTranslate
+
+    const dragOffset = Point.offset(dragPoint, origin)
+    const adjustedZoomeOffset = Point.map(
+      dragOffset,
+      v => v / currentZoomFactor
     )
-    const deltaX = (touchX - this.panStartPoint.x) / currentZoomFactor
-    const deltaY = (touchY - this.panStartPoint.y) / currentZoomFactor
-    const newTranslateX = deltaX + this.panStartTranslate.x
-    const newTranslateY = deltaY + this.panStartTranslate.y
-    this.panContentArea(newTranslateX, newTranslateY)
+    const nextTranslate = Point.sum(adjustedZoomeOffset, prevTranslate)
+    this.panContentArea(nextTranslate.x, nextTranslate.y)
   }
 
   onPanEnd() {
@@ -306,7 +308,6 @@ class PinchToZoom extends Component {
         break
       default: {
         /* don't allow pan if zoom factor === minZoomScale */
-        const { currentZoomFactor } = this.getTransform()
         const [p1] = PinchToZoom.getTouchesCoordinate(syntheticEvent)
         this.setState({ lastSingleTouchPoint: p1 })
         /*
@@ -347,17 +348,12 @@ class PinchToZoom extends Component {
 
   autoZoomToLastTouchPoint() {
     const { lastSingleTouchPoint } = this.state
-    console.log(
-      '[autoZoomToLastTouchPoint] lastSingleTouchPoint: ',
-      lastSingleTouchPoint
-    )
     if (lastSingleTouchPoint.x === 0 && lastSingleTouchPoint.y === 0) return
     this.autoZoomToPosition(lastSingleTouchPoint)
   }
 
   // auto zoom
   autoZoomToPosition({ x, y }) {
-    console.log('[autoZoomToPosition] autoZoomToPosition: ', x, y)
     const autoZoomFactor = 2.0
     const { currentZoomFactor, currentTranslate } = this.getTransform()
     const zoomAreaContainerW = this.zoomAreaContainer.clientWidth
@@ -442,7 +438,7 @@ class PinchToZoom extends Component {
   */
 
   render() {
-    const { debug, className, children, boundSize, contentSize } = this.props
+    const { debug, className, children } = this.props
 
     const _className = ['', 'pinch-to-zoom-container']
 

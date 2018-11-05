@@ -1,7 +1,7 @@
 import {
   distance,
   midpoint,
-} from '../PinchToZoom/algebra'
+} from '../PinchToZoom/Point'
 
 test('test distance', () => {
   const testcases = [

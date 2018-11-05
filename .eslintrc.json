@@ -10,6 +10,10 @@
       }
     }
   },
+  "env": {
+    "browser": true,
+    "node": true
+  },
   "settings": {
     "react": {
       "version": "16.0"
@@ -19,6 +23,7 @@
     "react"
   ],
   "extends": [
+    "eslint:recommended",
     "plugin:prettier/recommended",
     "plugin:react/recommended"
   ]
