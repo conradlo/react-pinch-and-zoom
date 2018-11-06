@@ -5,6 +5,7 @@
     "module": "es6",
     "moduleResolution": "node",
     "lib": ["dom", "es2015"],
+    "target": "ES6",
     "jsx": "react",
     "sourceMap": true,
     "noImplicitAny": true,
@@ -12,12 +13,9 @@
     "preserveConstEnums": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
-    "outDir": "./dist",
+    "outDir": "./lib",
   },
   "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
+    "src/PinchToZoom/*"
   ],
 }

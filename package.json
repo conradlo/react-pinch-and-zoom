@@ -26,7 +26,7 @@
     "test": "jest --watch",
     "lint": "eslint ./src --ext .js,.jsx && tslint --project .",
     "lint:fix": "eslint --fix ./src --ext .js,.jsx && tslint --project . --fix",
-    "build": "webpack --config webpack.prod.js"
+    "build": "tsc --project ."
   },
   "devDependencies": {
     "@types/jest": "^23.3.9",
@@ -52,6 +52,7 @@
     "morgan": "^1.9.1",
     "node-sass": "^4.10.0",
     "prettier": "1.14.3",
+    "prop-types": "^15.6.2",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
     "react-hot-loader": "^4.3.12",
@@ -70,11 +71,10 @@
   },
   "peerDependencies": {
     "react": "^16.6.0",
-    "react-dom": "^16.6.0"
-  },
-  "dependencies": {
+    "react-dom": "^16.6.0",
     "prop-types": "^15.6.2"
   },
+  "dependencies": {},
   "jest": {
     "testEnvironment": "node",
     "roots": [

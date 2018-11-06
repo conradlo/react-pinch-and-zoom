@@ -1,6 +1,7 @@
+const path = require('path')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 const merge = require('webpack-merge')
 const common = require('./webpack.common.js')
-const path = require('path')
 
 module.exports = merge(common, {
   mode: 'production',
@@ -12,4 +13,11 @@ module.exports = merge(common, {
     filename: 'index.js',
     path: path.resolve(__dirname, 'lib'),
   },
+  externals: [
+    {
+      react: 'react',
+      'prop-types': 'prop-types',
+    },
+  ],
+  plugins: [new CleanWebpackPlugin(['lib'])],
 })
