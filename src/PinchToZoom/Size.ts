@@ -1,3 +1,4 @@
+import { Point } from './Point'
 interface Size {
   width: number
   height: number
@@ -25,4 +26,11 @@ function isEqual(m: Size, n: Size): boolean {
   return m.width === n.width && m.height === n.height
 }
 
-export { Size, scale, diff, isEqual }
+function toPoint(s: Size): Point {
+  return {
+    x: s.width,
+    y: s.height
+  }
+}
+
+export { Size, scale, diff, isEqual, toPoint }

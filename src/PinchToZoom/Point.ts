@@ -1,4 +1,5 @@
 import { Rect } from './Rect'
+import { Size } from './Size'
 
 interface Point {
   x: number
@@ -65,6 +66,13 @@ function normalizePointInRect(point: Point, rect: Rect) {
   }
 }
 
+function toSize(p: Point): Size {
+  return {
+    width: p.x,
+    height: p.y
+  }
+}
+
 export {
   Point,
   distance,
@@ -75,5 +83,6 @@ export {
   scale,
   isEqual,
   boundWithin,
+  toSize,
   normalizePointInRect,
 }

@@ -166,63 +166,62 @@ class PinchToZoom extends Component {
   guardZoomAreaTranslate() {
     const { currentZoomFactor, currentTranslate } = this.getTransform()
     const { minZoomScale } = this.props
+    const {
+      clientWidth: containerW,
+      clientHeight: containerH,
+    } = this.zoomAreaContainer
+    const { clientWidth: contentW, clientHeight: contentH } = this.zoomArea
     if (currentZoomFactor < minZoomScale) {
       return
     }
 
     // container size
     const boundSize = {
-      width: this.zoomAreaContainer.clientWidth,
-      height: this.zoomAreaContainer.clientHeight,
+      width: containerW,
+      height: containerH,
     }
 
-    //
-    const contentRect = {
-      origin: {
-        x: currentTranslate.x,
-        y: currentTranslate.y,
+    // content size adjusted to zoom factor
+    const contentSize = Size.scale(
+      {
+        width: contentW,
+        height: contentH,
       },
-      size: Size.scale(
-        {
-          width: this.zoomArea.clientWidth,
-          height: this.zoomArea.clientHeight,
-        },
-        currentZoomFactor
-      ),
-    }
+      currentZoomFactor
+    )
 
-    const diff = Size.diff(boundSize, contentRect.size)
+    const diff = Size.diff(boundSize, contentSize)
+    const diffInPoint = Size.toPoint(diff)
 
-    const { width: maxLeft, height: maxTop } = Size.scale(
-      diff,
+    const unitScaleLeftTopPoint = Point.scale(
+      diffInPoint,
       1 / (2 * currentZoomFactor)
     )
 
-    const maxPositiveTranslate = {
-      x: maxLeft > 0 ? truncRound(maxLeft) : 0,
-      y: maxTop > 0 ? truncRound(maxTop) : 0,
-    }
+    const maxLeftTopPoint = Point.boundWithin(
+      { x: 0, y: 0 },
+      unitScaleLeftTopPoint,
+      Point.map(unitScaleLeftTopPoint, truncRound)
+    )
 
-    const { width: maxRight, height: maxBottom } = Size.scale(
-      diff,
+    const unitScaleRightBottomPoint = Point.scale(
+      diffInPoint,
       1 / currentZoomFactor
     )
 
-    const maxNegativeX = Math.min(maxRight, maxPositiveTranslate.x)
-    const maxNegativeY = Math.min(maxBottom, maxPositiveTranslate.y)
-    const maxNegativeTranslate = {
-      x: truncRound(maxNegativeX),
-      y: truncRound(maxNegativeY),
+    const maxRightBottomPoint = {
+      x: Math.min(unitScaleRightBottomPoint.x, maxLeftTopPoint.x),
+      y: Math.min(unitScaleRightBottomPoint.y, maxLeftTopPoint.y),
     }
 
-    const validate = Point.boundWithin(
-      maxNegativeTranslate,
+    const validatePos = Point.boundWithin(
+      maxRightBottomPoint,
       currentTranslate,
-      maxPositiveTranslate
+      maxLeftTopPoint
     )
 
-    if (!Point.isEqual(validate, currentTranslate)) {
-      this.panContentArea(validate)
+    if (!Point.isEqual(validatePos, currentTranslate)) {
+      this.panContentArea(validatePos)
     }
   }
 
