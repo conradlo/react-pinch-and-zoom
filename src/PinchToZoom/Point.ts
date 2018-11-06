@@ -49,8 +49,8 @@ function isEqual(p1: Point, p2: Point): boolean {
 }
 
 function boundWithin(min: Point, current: Point, max: Point): Point {
-  const numberWithin = (left: number, num: number, right: number) => {
-    return num > left ? left : right > num ? right : num
+  const numberWithin = (lower: number, num: number, upper: number) => {
+    return num > upper ? upper : lower > num ? lower : num
   }
   return {
     x: numberWithin(min.x, current.x, max.x),

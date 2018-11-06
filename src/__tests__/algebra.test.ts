@@ -1,4 +1,5 @@
 import {
+  boundWithin,
   distance,
   midpoint,
 } from '../PinchToZoom/Point'
@@ -42,5 +43,30 @@ test('test midpoint', () => {
       expected,
     } = t
     expect(midpoint(p1, p2)).toEqual(expected)
+  }
+})
+
+test('test boundWithin', () => {
+  const testcases = [
+    {
+      input: [{ x: 0, y: 0 }, { x: 0, y: 0 }, {x: 0, y: 0}],
+      expected: { x: 0, y: 0 },
+    },
+    {
+      input: [{ x: 0, y: 0 }, { x: -10, y: -10 }, {x: 0, y: 0}],
+      expected: { x: 0, y: 0 },
+    },
+    {
+      input: [{ x: -100, y: -100 }, { x: -10, y: -10 }, {x: 0, y: 0}],
+      expected: { x: -10, y: -10 },
+    }
+  ]
+
+  for (const t of testcases) {
+    const {
+      input: [lower, target, upper],
+      expected,
+    } = t
+    expect(boundWithin(lower, target, upper)).toEqual(expected)
   }
 })
