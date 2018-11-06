@@ -1,5 +1,6 @@
 const path = require('path')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const merge = require('webpack-merge')
 const common = require('./webpack.common.js')
 
@@ -7,17 +8,16 @@ module.exports = merge(common, {
   mode: 'production',
   devtool: 'source-map',
   entry: {
-    lib: path.resolve(__dirname, 'src/PinchToZoom/index.tsx'),
+    docs: path.resolve(__dirname, 'src/demo'),
   },
   output: {
-    filename: 'index.js',
-    path: path.resolve(__dirname, 'lib'),
+    path: path.resolve(__dirname, 'docs'),
+    filename: 'index.[hash].js',
   },
-  externals: [
-    {
-      react: 'react',
-      'prop-types': 'prop-types',
-    },
+  plugins: [
+    new CleanWebpackPlugin(['docs']),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, 'src/demo/index.html'),
+    }),
   ],
-  plugins: [new CleanWebpackPlugin(['lib'])],
 })

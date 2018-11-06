@@ -26,7 +26,13 @@
     "test": "jest --watch",
     "lint": "eslint ./src --ext .js,.jsx && tslint --project .",
     "lint:fix": "eslint --fix ./src --ext .js,.jsx && tslint --project . --fix",
-    "build": "tsc --project ."
+    "clear:lib": "rimraf lib/",
+    "clear:docs": "rimraf docs/",
+    "clear:all": "npm run clear:lib && npm run clear:docs",
+    "build:lib": "tsc --project .",
+    "build:docs": "webpack --config webpack.prod.js",
+    "build:all": "npm run build:lib && npm run build:docs",
+    "build": "npm run clear:all && npm run build:all"
   },
   "devDependencies": {
     "@types/jest": "^23.3.9",
@@ -56,6 +62,7 @@
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
     "react-hot-loader": "^4.3.12",
+    "rimraf": "^2.6.2",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.21.0",
     "ts-jest": "^23.10.4",

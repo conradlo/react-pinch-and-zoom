@@ -4,9 +4,9 @@ const morgan = require('morgan')
 const webpack = require('webpack')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
-const webpack_config = require('./webpack.dev.js')
+const webpackConfigDev = require('./webpack.dev.js')
 
-const compiler = webpack(webpack_config)
+const compiler = webpack(webpackConfigDev)
 
 const app = express()
 app.use(morgan('tiny'))

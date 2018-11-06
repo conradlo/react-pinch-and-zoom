@@ -1,5 +1,4 @@
 const path = require('path')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 module.exports = {
   module: {
@@ -32,5 +31,4 @@ module.exports = {
     modules: [path.resolve(__dirname, 'src'), 'node_modules'],
     extensions: ['.tsx', '.ts', '.js', '.jsx'],
   },
-  plugins: [new CleanWebpackPlugin(['dist'])],
 }
