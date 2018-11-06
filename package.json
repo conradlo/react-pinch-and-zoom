@@ -23,7 +23,8 @@
   "license": "MIT",
   "scripts": {
     "start": "node server.js",
-    "test": "jest --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "lint": "eslint ./src --ext .js,.jsx && tslint --project .",
     "lint:fix": "eslint --fix ./src --ext .js,.jsx && tslint --project . --fix",
     "clear:lib": "rimraf lib/",
@@ -32,7 +33,7 @@
     "build:lib": "tsc --project .",
     "build:docs": "webpack --config webpack.prod.js",
     "build:all": "npm run build:lib && npm run build:docs",
-    "build": "npm run clear:all && npm run build:all"
+    "build": "npm run lint:fix && npm run test && npm run clear:all && npm run build:all"
   },
   "devDependencies": {
     "@types/jest": "^23.3.9",
