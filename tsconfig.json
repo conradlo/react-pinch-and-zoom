@@ -1,21 +1,23 @@
 {
+  "compileOnSave": true,
   "compilerOptions": {
-    "module": "commonjs",
+    "strict": true,
+    "module": "es6",
+    "moduleResolution": "node",
+    "lib": ["dom", "es2015"],
     "jsx": "react",
     "sourceMap": true,
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
-    "lib": ["dom", "es2015"],
-    "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noImplicitReturns": true
+    "noImplicitReturns": true,
+    "outDir": "./dist",
   },
-  "compileOnSave": true,
   "include": [
     "src/**/*"
   ],
   "exclude": [
     "node_modules",
   ],
-}                                                                                                                                                                                              
+}

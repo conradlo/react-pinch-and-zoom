@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { hot } from 'react-hot-loader'
 import './style.scss'
 
-import PinchToZoom from 'lib'
+import PinchToZoom from 'PinchToZoom/index.tsx'
 import sq from 'demo/img/img_grid_square.jpg'
 
 class App extends Component {

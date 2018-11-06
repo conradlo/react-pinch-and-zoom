@@ -1,5 +1,6 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 const webpack = require('webpack')
 
 const github_page_source_path = path.resolve(__dirname, 'src/demo')
@@ -38,20 +39,20 @@ const config_base = {
     ],
   },
   resolve: {
-    modules: [
-      path.resolve('./'),
-      path.resolve('./src'),
-      path.resolve('./node_modules'),
-    ],
-    extensions: ['.js', '.jsx'],
+    modules: [path.resolve(__dirname, 'src'), 'node_modules'],
+    extensions: ['.tsx', '.ts', '.js', '.jsx'],
   },
 }
 
 const config_dev = Object.assign({}, config_base, {
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+  },
   mode: 'development',
   devtool: 'inline-source-map',
   entry: [github_page_source_path, 'webpack-hot-middleware/client'],
   plugins: [
+    new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src/demo/index.html'),
     }),
@@ -70,4 +71,4 @@ const config_prod = Object.assign({}, config_base, {
   ],
 })
 
-module.exports = [config_dev, config_prod]
+module.exports = config_dev
