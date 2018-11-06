@@ -20,7 +20,7 @@ const config_base = {
       },
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
+        use: 'awesome-typescript-loader',
         exclude: /node_modules/,
       },
       {
