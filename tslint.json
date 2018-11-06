@@ -1,0 +1,14 @@
+{
+  "extends": [
+    "tslint:latest",
+    "tslint-eslint-rules",
+    "tslint-config-prettier"
+  ],
+  "rules": {
+    "interface-name": [false],
+    "no-unsafe-any": true,
+    "no-null-keyword": true,
+    "object-literal-sort-keys": false,
+    "no-implicit-dependencies": [true, ["src"]]
+  }
+}
