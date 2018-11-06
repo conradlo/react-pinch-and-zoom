@@ -6,6 +6,13 @@ interface Point {
   y: number
 }
 
+function newOriginPoint() {
+  return {
+    x: 0,
+    y: 0
+  }
+}
+
 function distance(p1: Point, p2: Point): number {
   // Pythagorean Theorem: c^2 = a^2 + b^2
   const { x: x1, y: y1 } = p1
@@ -75,6 +82,7 @@ function toSize(p: Point): Size {
 
 export {
   Point,
+  newOriginPoint,
   distance,
   midpoint,
   offset,

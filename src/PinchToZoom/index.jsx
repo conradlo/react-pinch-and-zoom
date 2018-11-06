@@ -9,6 +9,10 @@ import * as Size from './Size.ts'
 
 const truncRound = num => Math.trunc(num * 10000) / 10000
 
+const GUESTURE_TYPE_UNSET = 'GUESTURE_TYPE_UNSET'
+const GUESTURE_TYPE_PAN = 'GUESTURE_TYPE_PAN'
+const GUESTURE_TYPE_PINCH = 'GUESTURE_TYPE_PINCH'
+
 class PinchToZoom extends Component {
   static getTouchesCoordinate(syntheticEvent) {
     /**
@@ -45,28 +49,33 @@ class PinchToZoom extends Component {
     // instance variable: transform data
     this.transform = {}
     this.transform.zoomFactor = 1.0
-    this.transform.translate = {
-      x: 0.0,
-      y: 0.0,
-    }
+    this.transform.translate = Point.newOriginPoint()
 
     // instance variable: guesture
-    this.currentGesture = 'unknown' // 'pinch', 'pan', 'unknown'
+    this._currentGesture = GUESTURE_TYPE_UNSET // 'pinch', 'pan', 'unknown'
 
     // instance variable: pinch
     this.pinchStartZoomFactor = 1.0
-    this.pinchStartTouchMidpoint = { x: 0, y: 0 }
-    this.pinchStartTranslate = { x: 0, y: 0 }
+    this.pinchStartTouchMidpoint = Point.newOriginPoint()
+    this.pinchStartTranslate = Point.newOriginPoint()
     this.pinchStartTouchPointDist = 0
 
     // instance variable: pan
-    this.panStartPoint = { x: 0, y: 0 }
-    this.panStartTranslate = { x: 0, y: 0 }
+    this.panStartPoint = Point.newOriginPoint()
+    this.panStartTranslate = Point.newOriginPoint()
 
     // record last touch point
     this.state = {
-      lastSingleTouchPoint: { x: 0, y: 0 },
+      lastSingleTouchPoint: Point.newOriginPoint(),
     }
+  }
+
+  get currentGesture() {
+    return this._currentGesture
+  }
+
+  set currentGesture(guesture) {
+    this._currentGesture = guesture
   }
 
   componentDidMount() {}
@@ -199,7 +208,7 @@ class PinchToZoom extends Component {
     )
 
     const maxLeftTopPoint = Point.boundWithin(
-      { x: 0, y: 0 },
+      Point.newOriginPoint(),
       unitScaleLeftTopPoint,
       Point.map(unitScaleLeftTopPoint, truncRound)
     )
@@ -239,32 +248,36 @@ class PinchToZoom extends Component {
   zoomContentArea(zoomFactor) {
     // calculate delta translate needed
     const prevZoomFactor = this.pinchStartZoomFactor
-    const originalTranslate = this.pinchStartTranslate
+    const prevTranslate = this.pinchStartTranslate
+    const {
+      clientWidth: containerW,
+      clientHeight: containerH,
+    } = this.zoomAreaContainer
 
     const boundSize = {
-      width: this.zoomAreaContainer.clientWidth,
-      height: this.zoomAreaContainer.clientHeight,
+      width: containerW,
+      height: containerH,
     }
 
     const prevZoomSize = Size.scale(boundSize, prevZoomFactor)
     const nextZoomSize = Size.scale(boundSize, zoomFactor)
 
-    const centerOriginal = {
+    const prevRectCenterPoint = {
       x: prevZoomSize.width / 2,
       y: prevZoomSize.height / 2,
     }
 
-    const centerScale = {
+    const nextRectCenterPoint = {
       x: nextZoomSize.width / 2,
       y: nextZoomSize.height / 2,
     }
 
     const deltaTranslate = Point.scale(
-      Point.offset(centerOriginal, centerScale),
+      Point.offset(prevRectCenterPoint, nextRectCenterPoint),
       1 / (zoomFactor * prevZoomFactor)
     )
 
-    const accumulateTranslate = Point.sum(deltaTranslate, originalTranslate)
+    const accumulateTranslate = Point.sum(deltaTranslate, prevTranslate)
 
     // update zoom scale and corresponding translate
     this.setTransform({
@@ -282,18 +295,14 @@ class PinchToZoom extends Component {
     // 2 touches == pinch, else all considered as pan
     switch (syntheticEvent.nativeEvent.touches.length) {
       case 2:
-        this.currentGesture = 'pinch'
+        this.currentGesture = GUESTURE_TYPE_PINCH
         this.onPinchStart(syntheticEvent)
         break
       default: {
         /* don't allow pan if zoom factor === minZoomScale */
         const [p1] = PinchToZoom.getTouchesCoordinate(syntheticEvent)
         this.setState({ lastSingleTouchPoint: p1 })
-        /*
-          if we don't set `this.currentGesture = 'pan' `
-          handleTouchMove won't trigger `this.onPanMove`
-         */
-        this.currentGesture = 'pan'
+        this.currentGesture = GUESTURE_TYPE_PAN
         this.onPanStart(syntheticEvent)
       }
     }
@@ -303,12 +312,12 @@ class PinchToZoom extends Component {
     // 2 touches == pinch, else all considered as pan
     switch (syntheticEvent.nativeEvent.touches.length) {
       case 2:
-        if (this.currentGesture === 'pinch') {
+        if (this.currentGesture === GUESTURE_TYPE_PINCH) {
           this.onPinchMove(syntheticEvent)
         }
         break
       default:
-        if (this.currentGesture === 'pan') {
+        if (this.currentGesture === GUESTURE_TYPE_PAN) {
           this.onPanMove(syntheticEvent)
         }
     }
@@ -316,13 +325,13 @@ class PinchToZoom extends Component {
 
   handleTouchEnd(syntheticEvent) {
     this.zoomArea.style.transitionDuration = '0.3s'
-    if (this.currentGesture === 'pinch') {
+    if (this.currentGesture === GUESTURE_TYPE_PINCH) {
       this.onPinchEnd(syntheticEvent)
     }
-    if (this.currentGesture === 'pan') {
+    if (this.currentGesture === GUESTURE_TYPE_PAN) {
       this.onPanEnd(syntheticEvent)
     }
-    this.currentGesture = 'unknown'
+    this.currentGesture = GUESTURE_TYPE_UNSET
   }
 
   autoZoomToLastTouchPoint() {
