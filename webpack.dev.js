@@ -1,8 +1,8 @@
 const path = require('path')
 const merge = require('webpack-merge')
-const common = require('./webpack.common.js')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
+const common = require('./webpack.common.js')
 
 const github_page_source_path = path.resolve(__dirname, 'src/demo')
 
