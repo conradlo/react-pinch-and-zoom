@@ -2,15 +2,15 @@
 ![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)
 
 # React Pinch and Zoom
-
 A react container component with pinch-to-zoom gesture interaction.
+<!-- ![header img](/static/demo_header.gif) -->
+<p align="center">
+  <img src="/static/demo_header.gif">
+</p>
 
 ## Getting Started
 
 <!-- TODO: -->
-
-<!-- // TODO: es6 module,  -->
-<!-- // TODO: demo image/gif/video etc,  -->
 <!-- ### Prerequisites -->
 
 ### Installing
