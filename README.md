@@ -9,29 +9,31 @@ A react container component with pinch-to-zoom gesture interaction.
 
 <!-- TODO: -->
 
+<!-- // TODO: es6 module,  -->
+<!-- // TODO: demo image/gif/video etc,  -->
 <!-- ### Prerequisites -->
 
 ### Installing
 
 1. Install this package as dependency
 
-    ```shell
+    ```fish
     [~/project/dir] $ npm install react-pinch-and-zoom
     ```
 
-1. Import the component
+2. Import the component
 
     ```jsx
     import PinchToZoom from 'react-pinch-and-zoom';
     ```
-1. Wrap the pinch-able component inside `PinchToZoom` component
+3. Wrap the pinch-able component inside `PinchToZoom` component
 
     ```jsx
     render() {
       return (
         <div className="container">
           <PinchToZoom>
-            <img src={...}/>
+            <img src={...}/> // child node should have intrinsic size
           </PinchToZoom>
         </div>
       );
@@ -40,21 +42,15 @@ A react container component with pinch-to-zoom gesture interaction.
 
 ## Project structure
 
-```shell
+```fish
 ./react-pinch-and-zoom (master)
-├── CONTRIBUTING.md
-├── LICENSE
-├── README.md
 ├── docs               // compiled github demo page
-├── lib                // compiled react-pinch-and-zoom (git ignored)
-├── node_modules       // git ignored
-├── package-lock.json
+├── lib                // compiled react component *in es6 module* (git ignored)
 ├── package.json
 ├── server.js          // config local development server
-├── src
-│   ├── PinchToZoom    // source code of react-pinch-and-zoom
-│   └── demo           // source code of github demo page
-└── webpack.config.js
+└── src
+    ├── PinchToZoom    // source code of react-pinch-and-zoom
+    └── demo           // source code of github demo page
 ```
 
 ## Develop on local machine
@@ -91,6 +87,7 @@ run `npm run build` will:
 * [Sass](https://sass-lang.com/) - Syntactically Awesome Style Sheets
 * [Webpack](https://webpack.js.org/) - JavaScript module bundler
 * [Babel](http://babeljs.io/) - JavaScript transpiler/compiler
+<!-- * typescript, eslint, tslint, prettier -->
 
 ## Contributing
 
@@ -106,7 +103,4 @@ see the [LICENSE](https://github.com/conradlo/react-pinch-and-zoom/blob/master/L
 
 ## Acknowledgments
 
-* https://github.com/markusenglund/react-npm-component-starter
 * https://gist.github.com/PurpleBooth/109311bb0361f32d87a2
-
-> "If your're not embarrassed by the first version of rour product, you’ve launched too late" - Reid Hoffman, founder of LinkedIn
