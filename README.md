@@ -17,13 +17,15 @@ A react container component with pinch-to-zoom gesture interaction.
 
 1. Install this package as dependency
 
-    ```fish
-    [~/project/dir] $ npm install react-pinch-and-zoom
+    ```shell
+    # pwd: ~/project/dir
+    $ npm install react-pinch-and-zoom
     ```
 
 2. Import the component
 
     ```jsx
+    // es6 module
     import PinchToZoom from 'react-pinch-and-zoom';
     ```
 3. Wrap the pinch-able component inside `PinchToZoom` component
@@ -42,7 +44,7 @@ A react container component with pinch-to-zoom gesture interaction.
 
 ## Project structure
 
-```fish
+```shell
 ./react-pinch-and-zoom (master)
 ├── docs               // compiled github demo page
 ├── lib                // compiled react component *in es6 module* (git ignored)
@@ -57,28 +59,33 @@ A react container component with pinch-to-zoom gesture interaction.
 
 1. Pull this repository
     ```shell
-    [~/development] $ git pull https://github.com/conradlo/react-pinch-and-zoom.git
+    # pwd: ~/development/dir
+    $ git pull https://github.com/conradlo/react-pinch-and-zoom.git
     ```
 1. Install dependency
     ```shell
-    [~/development] $ cd react-pinch-and-zoom
-    [~/development/react-pinch-and-zoom] $ npm install
+    $ cd react-pinch-and-zoom
+    # pwd: ~/development/dir/react-pinch-and-zoom
+    $ npm install
     ```
 1. Start local development server
     ```shell
-    [~/development/react-pinch-and-zoom] $ npm run dev
+    # pwd: ~/development/dir/react-pinch-and-zoom
+    $ npm start
     ```
-1. Visit `localhost:3000` and edit `src/PinchToZoom/index.js`
+2. Visit `localhost:3000` and edit `src/PinchToZoom/*`
+3. Consult `package.json` for more npm script tasks
 
 ## Production build
 
 run `npm run build` will:
 
 1. transpile the component's source code `/lib`
-1. build and bundle the Github page `/docs`
+2. build and bundle the Github page `/docs`
 
 ```shell
-[~/development/react-pinch-and-zoom] $ npm run build
+# pwd: ~/development/dir/react-pinch-and-zoom
+$ npm run build
 ```
 
 ## Built With
@@ -87,7 +94,8 @@ run `npm run build` will:
 * [Sass](https://sass-lang.com/) - Syntactically Awesome Style Sheets
 * [Webpack](https://webpack.js.org/) - JavaScript module bundler
 * [Babel](http://babeljs.io/) - JavaScript transpiler/compiler
-<!-- * typescript, eslint, tslint, prettier -->
+* [Typescript](https://www.typescriptlang.org/) - For extra type safety
+* [eslint](https://eslint.org/), [tslint](https://palantir.github.io/tslint/), [prettier](https://prettier.io/), [vscode](https://code.visualstudio.com/)
 
 ## Contributing
 
