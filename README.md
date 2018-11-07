@@ -2,13 +2,15 @@
 ![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)
 
 # React Pinch and Zoom
-
 A react container component with pinch-to-zoom gesture interaction.
+<!-- ![header img](/static/demo_header.gif) -->
+<p align="center">
+  <img src="/static/demo_header.gif">
+</p>
 
 ## Getting Started
 
 <!-- TODO: -->
-
 <!-- ### Prerequisites -->
 
 ### Installing
@@ -16,22 +18,24 @@ A react container component with pinch-to-zoom gesture interaction.
 1. Install this package as dependency
 
     ```shell
-    [~/project/dir] $ npm install react-pinch-and-zoom
+    # pwd: ~/project/dir
+    $ npm install react-pinch-and-zoom
     ```
 
-1. Import the component
+2. Import the component
 
     ```jsx
+    // es6 module
     import PinchToZoom from 'react-pinch-and-zoom';
     ```
-1. Wrap the pinch-able component inside `PinchToZoom` component
+3. Wrap the pinch-able component inside `PinchToZoom` component
 
     ```jsx
     render() {
       return (
         <div className="container">
           <PinchToZoom>
-            <img src={...}/>
+            <img src={...}/> // child node should have intrinsic size
           </PinchToZoom>
         </div>
       );
@@ -42,47 +46,46 @@ A react container component with pinch-to-zoom gesture interaction.
 
 ```shell
 ./react-pinch-and-zoom (master)
-├── CONTRIBUTING.md
-├── LICENSE
-├── README.md
 ├── docs               // compiled github demo page
-├── lib                // compiled react-pinch-and-zoom (git ignored)
-├── node_modules       // git ignored
-├── package-lock.json
+├── lib                // compiled react component *in es6 module* (git ignored)
 ├── package.json
 ├── server.js          // config local development server
-├── src
-│   ├── PinchToZoom    // source code of react-pinch-and-zoom
-│   └── demo           // source code of github demo page
-└── webpack.config.js
+└── src
+    ├── PinchToZoom    // source code of react-pinch-and-zoom
+    └── demo           // source code of github demo page
 ```
 
 ## Develop on local machine
 
 1. Pull this repository
     ```shell
-    [~/development] $ git pull https://github.com/conradlo/react-pinch-and-zoom.git
+    # pwd: ~/development/dir
+    $ git pull https://github.com/conradlo/react-pinch-and-zoom.git
     ```
 1. Install dependency
     ```shell
-    [~/development] $ cd react-pinch-and-zoom
-    [~/development/react-pinch-and-zoom] $ npm install
+    $ cd react-pinch-and-zoom
+    # pwd: ~/development/dir/react-pinch-and-zoom
+    $ npm install
     ```
 1. Start local development server
     ```shell
-    [~/development/react-pinch-and-zoom] $ npm run dev
+    # pwd: ~/development/dir/react-pinch-and-zoom
+    $ npm start
     ```
-1. Visit `localhost:3000` and edit `src/PinchToZoom/index.js`
+2. Visit `localhost:3000` and edit `src/PinchToZoom/*`
+3. Consult `package.json` for more npm script tasks
 
 ## Production build
 
 run `npm run build` will:
 
 1. transpile the component's source code `/lib`
-1. build and bundle the Github page `/docs`
+2. build and bundle the Github page `/docs`
 
 ```shell
-[~/development/react-pinch-and-zoom] $ npm run build
+# pwd: ~/development/dir/react-pinch-and-zoom
+$ npm run build
 ```
 
 ## Built With
@@ -91,6 +94,8 @@ run `npm run build` will:
 * [Sass](https://sass-lang.com/) - Syntactically Awesome Style Sheets
 * [Webpack](https://webpack.js.org/) - JavaScript module bundler
 * [Babel](http://babeljs.io/) - JavaScript transpiler/compiler
+* [Typescript](https://www.typescriptlang.org/) - For extra type safety
+* [eslint](https://eslint.org/), [tslint](https://palantir.github.io/tslint/), [prettier](https://prettier.io/), [vscode](https://code.visualstudio.com/)
 
 ## Contributing
 
@@ -106,7 +111,4 @@ see the [LICENSE](https://github.com/conradlo/react-pinch-and-zoom/blob/master/L
 
 ## Acknowledgments
 
-* https://github.com/markusenglund/react-npm-component-starter
 * https://gist.github.com/PurpleBooth/109311bb0361f32d87a2
-
-> "If your're not embarrassed by the first version of rour product, you’ve launched too late" - Reid Hoffman, founder of LinkedIn
