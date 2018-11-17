@@ -2,10 +2,11 @@
   "compileOnSave": true,
   "compilerOptions": {
     "strict": true,
-    "module": "es6",
+    "declaration": true,
+    "module": "commonjs",
     "moduleResolution": "node",
     "lib": ["dom", "es2015"],
-    "target": "ES6",
+    "target": "es5",
     "jsx": "react",
     "sourceMap": true,
     "noImplicitAny": true,
