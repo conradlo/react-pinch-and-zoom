@@ -1,6 +1,6 @@
 {
   "name": "react-pinch-and-zoom",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "author": "Conrad Lo",
   "description": "A react container component with pinch-to-zoom gesture interaction.",
   "keywords": [
@@ -14,6 +14,7 @@
     "lib/"
   ],
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/conradlo/react-pinch-and-zoom"
@@ -33,7 +34,8 @@
     "build:lib": "tsc --project .",
     "build:docs": "webpack --config webpack.prod.js",
     "build:all": "npm run build:lib && npm run build:docs",
-    "build": "npm run lint:fix && npm run test && npm run clear:all && npm run build:all"
+    "build": "npm run lint:fix && npm run test && npm run clear:all && npm run build:all",
+    "prepublish": "npm run build"
   },
   "devDependencies": {
     "@types/jest": "^23.3.9",
