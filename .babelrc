@@ -1,5 +1,5 @@
 {
-  "presets": ["env", "react"],
+  "presets": ["@babel/env", "@babel/react"],
   "env": {
     "development": {
       "plugins": ["react-hot-loader/babel"]
