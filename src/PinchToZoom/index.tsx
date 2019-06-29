@@ -21,7 +21,8 @@ interface PinchToZoomProps {
   minZoomScale: number
   maxZoomScale: number
   boundSize: Size.Size
-  contentSize: Size.Size,
+  contentSize: Size.Size
+  fillContainer?: boolean
 }
 
 interface PinchToZoomState {
@@ -129,6 +130,20 @@ class PinchToZoom extends React.Component<PinchToZoomProps, PinchToZoomState> {
       this.guardZoomAreaTranslate()
     }
   }
+
+  public componentDidMount(): void {
+    setTimeout(() => {
+      const startEvent = document.createEvent('TouchEvent')
+      startEvent.initEvent('touchstart', true, true);
+      const endEvent = document.createEvent('TouchEvent');
+      endEvent.initEvent('touchend', true, true);
+      if (this.zoomAreaContainer) {
+        this.zoomAreaContainer.dispatchEvent(startEvent);
+        this.zoomAreaContainer.dispatchEvent(endEvent);
+      }
+    }, 0);
+  }
+
   /*
     Pinch event handlers
   */
@@ -494,7 +509,7 @@ class PinchToZoom extends React.Component<PinchToZoomProps, PinchToZoomState> {
   */
 
   public render() {
-    const { debug, className, children } = this.props
+    const { debug, fillContainer, className, children } = this.props
 
     const classNameList = ['', 'pinch-to-zoom-container']
 
@@ -502,6 +517,8 @@ class PinchToZoom extends React.Component<PinchToZoomProps, PinchToZoomState> {
       display: 'inline-block',
       overflow: 'hidden',
       backgroundColor: 'inherit',
+      width: fillContainer ? '100%' : undefined,
+      height: fillContainer ? '100%' : undefined,
     }
 
     const zoomAreaInlineStyle = {
@@ -558,6 +575,7 @@ PinchToZoom.defaultProps = {
     width: 100,
     height: 100,
   },
+  fillContainer: false
 }
 
 PinchToZoom.propTypes = {
@@ -577,6 +595,7 @@ PinchToZoom.propTypes = {
     width: PropTypes.number, // eslint-disable-line
     height: PropTypes.number, // eslint-disable-line
   }),
+  fillContainer: PropTypes.bool,
   children: PropTypes.node,
 }
 
