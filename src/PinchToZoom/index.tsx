@@ -23,6 +23,14 @@ interface PinchToZoomProps {
   boundSize: Size.Size
   contentSize: Size.Size
   fillContainer?: boolean
+
+  /** Callback to run each time transform is updated */
+  onTransform?: (
+    transform: {
+      zoomFactor: number
+      translate: Point.Point
+    }
+  ) => void
 }
 
 interface PinchToZoomState {
@@ -30,7 +38,6 @@ interface PinchToZoomState {
 }
 
 class PinchToZoom extends React.Component<PinchToZoomProps, PinchToZoomState> {
-
   public static defaultProps: {}
   public static propTypes: {}
   public static getTouchesCoordinate(
@@ -134,14 +141,14 @@ class PinchToZoom extends React.Component<PinchToZoomProps, PinchToZoomState> {
   public componentDidMount(): void {
     setTimeout(() => {
       const startEvent = document.createEvent('TouchEvent')
-      startEvent.initEvent('touchstart', true, true);
-      const endEvent = document.createEvent('TouchEvent');
-      endEvent.initEvent('touchend', true, true);
+      startEvent.initEvent('touchstart', true, true)
+      const endEvent = document.createEvent('TouchEvent')
+      endEvent.initEvent('touchend', true, true)
       if (this.zoomAreaContainer) {
-        this.zoomAreaContainer.dispatchEvent(startEvent);
-        this.zoomAreaContainer.dispatchEvent(endEvent);
+        this.zoomAreaContainer.dispatchEvent(startEvent)
+        this.zoomAreaContainer.dispatchEvent(endEvent)
       }
-    }, 0);
+    }, 0)
   }
 
   /*
@@ -463,6 +470,8 @@ class PinchToZoom extends React.Component<PinchToZoomProps, PinchToZoomState> {
       y: this.transform.translate.y,
     },
   } = {}) {
+    const { onTransform, minZoomScale } = this.props
+
     if (!this.zoomAreaContainer || !this.zoomArea) {
       return
     }
@@ -470,7 +479,7 @@ class PinchToZoom extends React.Component<PinchToZoomProps, PinchToZoomState> {
     const roundTransalteY = Math.round(translate.y * 1000) / 1000
 
     // don't allow zoomFactor smaller then this.props.minZoomScale * 0.8
-    if (zoomFactor < this.props.minZoomScale * 0.8) {
+    if (zoomFactor < minZoomScale * 0.8) {
       return
     }
 
@@ -478,6 +487,11 @@ class PinchToZoom extends React.Component<PinchToZoomProps, PinchToZoomState> {
     this.transform.zoomFactor = zoomFactor
     this.transform.translate.x = roundTransalteX
     this.transform.translate.y = roundTransalteY
+
+    // run optional onTransform callback
+    if (onTransform) {
+      onTransform(this.transform)
+    }
 
     // update the transform style
     const styleString = `
@@ -575,7 +589,7 @@ PinchToZoom.defaultProps = {
     width: 100,
     height: 100,
   },
-  fillContainer: false
+  fillContainer: false,
 }
 
 PinchToZoom.propTypes = {
