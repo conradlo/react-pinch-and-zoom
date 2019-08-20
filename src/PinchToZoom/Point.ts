@@ -6,7 +6,7 @@ interface Point {
   y: number
 }
 
-function newOriginPoint() {
+function newOriginPoint(): Point {
   return {
     x: 0,
     y: 0
