@@ -140,8 +140,14 @@ class PinchToZoom extends React.Component<PinchToZoomProps, PinchToZoomState> {
 
   public componentDidMount(): void {
     setTimeout(() => {
-      var startEvent = new TouchEvent('touchstart', {cancelable:true, bubbles:true});
-      var endEvent = new TouchEvent('touchend', {cancelable:true, bubbles:true});
+      const startEvent = new TouchEvent('touchstart', {
+        cancelable: true,
+        bubbles: true,
+      })
+      const endEvent = new TouchEvent('touchend', {
+        cancelable: true,
+        bubbles: true,
+      })
       if (this.zoomAreaContainer) {
         this.zoomAreaContainer.dispatchEvent(startEvent)
         this.zoomAreaContainer.dispatchEvent(endEvent)
