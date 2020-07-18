@@ -8,6 +8,9 @@ A react container component with pinch-to-zoom gesture interaction.
   <img src="/static/demo_header.gif">
 </p>
 
+<a href="https://codesandbox.io/s/holy-http-mg2u6?file=/src/App.js">Demo</a>
+
+
 ## Getting Started
 
 <!-- TODO: -->
