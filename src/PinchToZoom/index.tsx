@@ -38,8 +38,10 @@ interface PinchToZoomState {
 }
 
 class PinchToZoom extends React.Component<PinchToZoomProps, PinchToZoomState> {
-  public static defaultProps: {}
-  public static propTypes: {}
+  public static defaultProps: PinchToZoomProps
+  public static propTypes: PropTypes.InferProps<
+    PinchToZoomProps & { children: React.ReactNode }
+  >
   public static getTouchesCoordinate(
     syntheticEvent: React.SyntheticEvent
   ): Point.Point[] {
@@ -403,7 +405,7 @@ class PinchToZoom extends React.Component<PinchToZoomProps, PinchToZoomState> {
     }
   }
 
-  public handleTouchEnd(syntheticEvent: React.SyntheticEvent) {
+  public handleTouchEnd(_: React.SyntheticEvent) {
     if (!this.zoomAreaContainer || !this.zoomArea) {
       return
     }

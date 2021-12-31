@@ -29,7 +29,7 @@ function isEqual(m: Size, n: Size): boolean {
 function toPoint(s: Size): Point {
   return {
     x: s.width,
-    y: s.height
+    y: s.height,
   }
 }
 

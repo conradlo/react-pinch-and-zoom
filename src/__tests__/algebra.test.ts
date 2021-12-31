@@ -1,8 +1,4 @@
-import {
-  boundWithin,
-  distance,
-  midpoint,
-} from '../PinchToZoom/Point'
+import { boundWithin, distance, midpoint } from '../PinchToZoom/Point'
 
 test('test distance', () => {
   const testcases = [
@@ -34,7 +30,7 @@ test('test midpoint', () => {
     {
       input: [{ x: 3, y: 0 }, { x: 0, y: 4 }],
       expected: { x: 1.5, y: 2 },
-    }
+    },
   ]
 
   for (const t of testcases) {
@@ -49,17 +45,17 @@ test('test midpoint', () => {
 test('test boundWithin', () => {
   const testcases = [
     {
-      input: [{ x: 0, y: 0 }, { x: 0, y: 0 }, {x: 0, y: 0}],
+      input: [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }],
       expected: { x: 0, y: 0 },
     },
     {
-      input: [{ x: 0, y: 0 }, { x: -10, y: -10 }, {x: 0, y: 0}],
+      input: [{ x: 0, y: 0 }, { x: -10, y: -10 }, { x: 0, y: 0 }],
       expected: { x: 0, y: 0 },
     },
     {
-      input: [{ x: -100, y: -100 }, { x: -10, y: -10 }, {x: 0, y: 0}],
+      input: [{ x: -100, y: -100 }, { x: -10, y: -10 }, { x: 0, y: 0 }],
       expected: { x: -10, y: -10 },
-    }
+    },
   ]
 
   for (const t of testcases) {

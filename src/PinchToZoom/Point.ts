@@ -9,7 +9,7 @@ interface Point {
 function newOriginPoint(): Point {
   return {
     x: 0,
-    y: 0
+    y: 0,
   }
 }
 
@@ -76,7 +76,7 @@ function normalizePointInRect(point: Point, rect: Rect) {
 function toSize(p: Point): Size {
   return {
     width: p.x,
-    height: p.y
+    height: p.y,
   }
 }
 
