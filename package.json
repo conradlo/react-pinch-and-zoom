@@ -36,7 +36,7 @@
     "build:all": "npm run build:lib && npm run build:docs",
     "build": "npm run lint:fix && npm run test && npm run clear:all && npm run build:all",
     "version": "npm run build && git add .",
-    "prepublish": "npm run build"
+    "prepare": "npm run build"
   },
   "devDependencies": {
     "@babel/core": "^7.16.7",
