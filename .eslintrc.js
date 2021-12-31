@@ -1,5 +1,5 @@
 module.exports = {
-  parser: "@babel/eslint-parser",
+  parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: 6,
     sourceType: "module",
@@ -16,15 +16,24 @@ module.exports = {
   },
   settings: {
     react: {
+      pragma: "React",
       version: "16.0"
     }
   },
   plugins: [
-    "react"
+    "@typescript-eslint",
+    "react",
+    "react-hooks"
   ],
   extends: [
     "eslint:recommended",
     "plugin:prettier/recommended",
-    "plugin:react/recommended"
-  ]
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  rules: {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    // "react/prop-types": "off"
+  },
 }
