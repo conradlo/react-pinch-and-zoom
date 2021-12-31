@@ -2,3 +2,5 @@ node_modules
 /lib
 /local
 /dist
+
+.DS_Store
